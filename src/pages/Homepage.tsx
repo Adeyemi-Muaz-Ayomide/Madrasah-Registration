@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { BookOpen, GraduationCap, Star } from "lucide-react";
+import { BookOpen, GraduationCap } from "lucide-react";
 
 export default function Homepage() {
   const navigate = useNavigate();

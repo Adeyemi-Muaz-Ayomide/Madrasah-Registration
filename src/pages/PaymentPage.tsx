@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { CreditCard, CheckCircle, ArrowLeft } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Student } from "../types/student";
+import { PaystackButton, usePaystackPayment } from "react-paystack";
 
 export default function PaymentPage() {
   const { studentId } = useParams<{ studentId: string }>();
@@ -13,6 +14,32 @@ export default function PaymentPage() {
   const [error, setError] = useState("");
 
   const COURSE_FEE = 5000;
+
+  const config = {
+    reference: new Date().getTime().toString(),
+    email: "user@example.com",
+    amount: 20000, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
+    publicKey: "pk_test_501256d166e41a7c0ad0e93eee42f1be82909d2b",
+  };
+
+  // // you can call this function anything
+  // const handlePaystackSuccessAction = () => {
+  //   // Implementation for whatever you want to do with reference and after success call.
+  //   alert("Worked");
+  // };
+
+  // // you can call this function anything
+  // const handlePaystackCloseAction = () => {
+  //   // implementation for  whatever you want to do when the Paystack dialog closed.
+  //   alert("closed");
+  // };
+
+  // const componentProps = {
+  //   ...config,
+  //   text: "Paystack Button Implementation",
+  //   onSuccess: () => handlePaystackSuccessAction(),
+  //   onClose: handlePaystackCloseAction,
+  // };
 
   useEffect(() => {
     if (studentId) {
@@ -44,31 +71,70 @@ export default function PaymentPage() {
     }
   };
 
-  const handlePayment = async () => {
-    setProcessing(true);
-    setError("");
+  const handlePaystackSuccessAction = async (reference: any) => {
+    // reference.reference contains Paystack payment reference
+    if (!studentId) return;
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
+      // Update Supabase table
       const { error: updateError } = await supabase
         .from("Participation Registration Information")
         .update({
           payment_status: "paid",
-          stripe_session_id: `demo_${Date.now()}`,
+          payment_reference: reference.reference,
         })
         .eq("id", studentId);
 
       if (updateError) throw updateError;
 
+      // Navigate to access card page
       navigate(`/access-card/${studentId}`);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Payment processing failed"
+        err instanceof Error
+          ? err.message
+          : "Payment succeeded but updating database failed."
       );
-      setProcessing(false);
     }
   };
+
+  const handlePaystackCloseAction = () => {
+    setProcessing(false);
+    console.log("Payment window closed by user");
+  };
+
+  const componentProps = {
+    ...config,
+    text: `Complete Payment - ₦${COURSE_FEE}`,
+    onSuccess: handlePaystackSuccessAction, // call our function
+    onClose: handlePaystackCloseAction,
+  };
+  // const handlePayment = async () => {
+  //   if (!student) return;
+  //   setProcessing(true);
+  //   setError("");
+
+  //   try {
+  //     await new Promise((resolve) => setTimeout(resolve, 1500));
+
+  //     const { error: updateError } = await supabase
+  //       .from("Participation Registration Information")
+  //       .update({
+  //         payment_status: "paid",
+  //         stripe_session_id: `demo_${Date.now()}`,
+  //       })
+  //       .eq("id", studentId);
+
+  //     if (updateError) throw updateError;
+
+  //     navigate(`/access-card/${studentId}`);
+  //   } catch (err) {
+  //     setError(
+  //       err instanceof Error ? err.message : "Payment processing failed"
+  //     );
+  //     setProcessing(false);
+  //   }
+  // };
 
   if (loading) {
     return (
@@ -157,13 +223,13 @@ export default function PaymentPage() {
                 </div>
               </div>
             </div>
-
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
                 {error}
               </div>
             )}
 
+            <PaystackButton {...componentProps} />
             {/* <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
               <p className="text-sm text-blue-800">
                 <strong>Demo Mode:</strong> This is a demonstration payment. In
@@ -171,8 +237,7 @@ export default function PaymentPage() {
                 processing.
               </p>
             </div> */}
-
-            <button
+            {/* <button
               onClick={handlePayment}
               disabled={processing}
               className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
@@ -188,12 +253,12 @@ export default function PaymentPage() {
                   Complete Payment - ₦{COURSE_FEE}
                 </>
               )}
-            </button>
+            </button> */}
 
             <p className="text-center text-sm text-gray-500 mt-4">
               Secure payment processing
               <br />
-              Powered by Stripe
+              Powered by Remita
             </p>
           </div>
         </div>
