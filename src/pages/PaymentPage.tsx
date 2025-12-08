@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { CreditCard, CheckCircle, ArrowLeft } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Student } from "../types/student";
-import { PaystackButton, usePaystackPayment } from "react-paystack";
+import { PaystackButton } from "react-paystack";
 
 export default function PaymentPage() {
   const { studentId } = useParams<{ studentId: string }>();
@@ -13,13 +13,13 @@ export default function PaymentPage() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
 
-  const COURSE_FEE = 5000;
+  const COURSE_FEE = 100;
 
   const config = {
     reference: new Date().getTime().toString(),
-    email: "user@example.com",
-    amount: 20000, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
-    publicKey: "pk_test_501256d166e41a7c0ad0e93eee42f1be82909d2b",
+    email: student?.email || "no-reply@gardenquran.org",
+    amount: COURSE_FEE * 100, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
+    publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
   };
 
   // // you can call this function anything
@@ -52,7 +52,8 @@ export default function PaymentPage() {
       const { data, error } = await supabase
         .from("Participation Registration Information")
         .select("*")
-        .eq("id", studentId)
+        // .eq("id", studentId)
+        .eq("id", Number(studentId))
         .maybeSingle();
 
       if (error) throw error;
@@ -73,6 +74,7 @@ export default function PaymentPage() {
 
   const handlePaystackSuccessAction = async (reference: any) => {
     // reference.reference contains Paystack payment reference
+    setProcessing(true);
     if (!studentId) return;
 
     try {
@@ -83,7 +85,7 @@ export default function PaymentPage() {
           payment_status: "paid",
           payment_reference: reference.reference,
         })
-        .eq("id", studentId);
+        .eq("id", Number(studentId));
 
       if (updateError) throw updateError;
 
@@ -194,7 +196,7 @@ export default function PaymentPage() {
               </h2>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Student Name:</span>
+                  <span className="text-gray-600">Name:</span>
                   <span className="font-semibold text-gray-800">
                     {student?.full_name}
                   </span>
@@ -206,9 +208,9 @@ export default function PaymentPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Course Of Study:</span>
+                  <span className="text-gray-600">Gender:</span>
                   <span className="font-semibold text-gray-800">
-                    {student?.course_of_study}
+                    {student?.gender}
                   </span>
                 </div>
                 <div className="border-t border-green-300 pt-3 mt-3">
@@ -258,7 +260,7 @@ export default function PaymentPage() {
             <p className="text-center text-sm text-gray-500 mt-4">
               Secure payment processing
               <br />
-              Powered by Remita
+              Powered by Paystack
             </p>
           </div>
         </div>

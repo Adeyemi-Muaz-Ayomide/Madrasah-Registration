@@ -1,220 +1,455 @@
-import { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Download, CheckCircle, ArrowLeft } from 'lucide-react';
-import QRCode from 'qrcode';
-import html2canvas from 'html2canvas';
-import { supabase } from '../lib/supabase';
-import { Student } from '../types/student';
+import { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Download, CheckCircle, ArrowLeft } from "lucide-react";
+import QRCode from "qrcode";
+import html2canvas from "html2canvas";
+import { supabase } from "../lib/supabase";
 
 export default function AccessCardPage() {
   const { studentId } = useParams<{ studentId: string }>();
   const navigate = useNavigate();
   const cardRef = useRef<HTMLDivElement>(null);
-  const [student, setStudent] = useState<Student | null>(null);
-  const [qrCodeUrl, setQrCodeUrl] = useState('');
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [student, setStudent] = useState<any>(null); // Simplified typing since we only need a few fields
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (studentId) {
-      fetchStudentAndGenerateQR();
-    }
+    if (studentId) fetchStudentAndGenerateQR();
   }, [studentId]);
 
   const fetchStudentAndGenerateQR = async () => {
     try {
       const { data, error } = await supabase
-        .from('students')
-        .select('*')
-        .eq('id', studentId)
+        .from("Participation Registration Information")
+        .select("full_name, gender, id, payment_status")
+        .eq("id", Number(studentId))
         .maybeSingle();
 
       if (error) throw error;
       if (!data) {
-        setError('Student not found');
+        setError("Student not found");
         return;
       }
-
-      if (data.payment_status !== 'paid') {
-        setError('Payment not completed');
+      if (data.payment_status !== "paid") {
+        setError("Payment not completed");
         return;
       }
 
       setStudent(data);
 
-      const qrUrl = await QRCode.toDataURL(data.qr_code_value, {
-        width: 300,
-        margin: 2,
+      // Generate readable QR code content
+      const qrText = `Name: ${data.full_name}\nID: ID: ${String(
+        data.id
+      ).toUpperCase()}
+\nGender: ${data.gender}`;
+
+      const qrUrl = await QRCode.toDataURL(qrText, {
+        width: 320,
+        margin: 3,
         color: {
-          dark: '#0B8A32',
-          light: '#FFFFFF',
+          dark: "#0B8A32",
+          light: "#FFFFFF",
         },
       });
+
       setQrCodeUrl(qrUrl);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error loading access card');
+      setError(err instanceof Error ? err.message : "Failed to load card");
     } finally {
       setLoading(false);
     }
   };
 
   const downloadCard = async () => {
-    if (!cardRef.current) return;
+    if (!cardRef.current || !student) return;
 
-    try {
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 2,
-        backgroundColor: '#ffffff',
-      });
+    const canvas = await html2canvas(cardRef.current, {
+      scale: 3,
+      backgroundColor: "#ffffff",
+      logging: false,
+    });
 
-      const link = document.createElement('a');
-      link.download = `access-card-${student?.full_name.replace(/\s+/g, '-')}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    } catch (err) {
-      console.error('Error downloading card:', err);
-    }
+    const link = document.createElement("a");
+    link.download = `Access-Card-${student.full_name.replace(/\s+/g, "-")}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
   };
 
+  // Loading State
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-600 mx-auto mb-4" />
-          <p className="text-gray-600">Generating your access card...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-700 font-medium">
+            Preparing your access card...
+          </p>
         </div>
       </div>
     );
   }
 
+  // Error State
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex items-center justify-center px-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-3xl">❌</span>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Error</h2>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
+          <div className="text-6xl mb-4">Error</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-3">
+            Access Denied
+          </h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             className="text-green-700 hover:text-green-800 font-semibold"
           >
-            Return to Home
+            ← Back to Home
           </button>
         </div>
       </div>
     );
   }
 
+  // Success - Access Card
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 py-12 px-4">
-      <div className="islamic-pattern absolute inset-0 opacity-5" />
-
-      <div className="relative max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 py-12 px-4">
+      <div className="max-w-4xl mx-auto relative">
         <button
-          onClick={() => navigate('/')}
-          className="inline-flex items-center gap-2 text-green-700 hover:text-green-800 mb-6 transition-colors"
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2 text-green-700 hover:text-green-800 mb-8 font-medium"
         >
           <ArrowLeft className="w-5 h-5" />
           Back to Home
         </button>
 
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
-            <CheckCircle className="w-10 h-10 text-green-600" />
-          </div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Registration Complete!</h1>
-          <p className="text-lg text-gray-600">Your student access card is ready</p>
+        <div className="text-center mb-10">
+          <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
+          <h1 className="text-4xl font-bold text-gray-800">
+            Access Card Ready!
+          </h1>
+          <p className="text-lg text-gray-600 mt-2">
+            Download and keep it safe
+          </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-8 mb-8">
-          <div ref={cardRef} className="relative bg-gradient-to-br from-green-600 via-green-700 to-green-800 rounded-2xl p-8 overflow-hidden">
-            <div className="islamic-pattern-card absolute inset-0 opacity-10" />
+        {/* The Actual Card */}
+        <div className="bg-white rounded-3xl shadow-2xl p-10 mb-10">
+          <div
+            ref={cardRef}
+            className="relative bg-gradient-to-br from-green-700 to-green-900 text-white rounded-2xl p-10 overflow-hidden shadow-2xl"
+          >
+            {/* Decorative Background */}
+            <div className="absolute inset-0 bg-black opacity-10"></div>
+            <div className="absolute top-0 right-0 w-80 h-80 bg-yellow-300 rounded-full blur-3xl opacity-20"></div>
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-400 rounded-full blur-3xl opacity-20"></div>
 
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-8">
+              {/* Header */}
+              <div className="flex justify-between items-start mb-10">
                 <div>
-                  <h2 className="text-3xl font-bold text-white mb-1">Madrasah Rawdatul Quraan</h2>
-                  <p className="text-green-100">Student Access Card</p>
+                  <h2 className="text-3xl font-bold">
+                    Madrasah Rawdatul Quraan
+                  </h2>
+                  <p className="text-green-200 text-lg mt-1">
+                    Official Student Access Card
+                  </p>
                 </div>
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
-                  <span className="text-3xl">📖</span>
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  {student?.photo_url && (
-                    <div className="mb-4">
-                      <img
-                        src={student.photo_url}
-                        alt={student.full_name}
-                        className="w-32 h-32 rounded-xl object-cover border-4 border-white shadow-lg"
-                      />
-                    </div>
-                  )}
-
-                  <div>
-                    <p className="text-green-200 text-sm mb-1">Full Name</p>
-                    <p className="text-white text-xl font-bold">{student?.full_name}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-green-200 text-sm mb-1">Student ID</p>
-                    <p className="text-white text-lg font-mono">{student?.id?.slice(0, 13).toUpperCase()}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-green-200 text-sm mb-1">Program</p>
-                    <p className="text-white text-lg">{student?.course}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-green-200 text-sm mb-1">Date of Birth</p>
-                    <p className="text-white text-lg">{new Date(student?.date_of_birth || '').toLocaleDateString()}</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-center justify-center">
-                  <div className="bg-white p-4 rounded-xl shadow-2xl">
-                    {qrCodeUrl && (
-                      <img src={qrCodeUrl} alt="QR Code" className="w-64 h-64" />
-                    )}
-                  </div>
-                  <p className="text-green-100 text-sm mt-4 text-center">Scan for verification</p>
+                <div className="bg-white text-green-800 w-16 h-16 rounded-full flex items-center justify-center text-4xl font-bold shadow-lg">
+                  Open Book
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-green-500">
-                <div className="flex justify-between items-center text-green-100 text-sm">
-                  <span>Valid from {new Date().toLocaleDateString()}</span>
-                  <span className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4" />
-                    Verified
-                  </span>
+              {/* Main Content */}
+              <div className="grid md:grid-cols-2 gap-10 items-center">
+                {/* Left: Student Info */}
+                <div className="space-y-7 text-lg">
+                  <div>
+                    <p className="text-green-200 text-sm font-medium uppercase tracking-wider">
+                      Full Name
+                    </p>
+                    <p className="text-2xl font-bold mt-1">
+                      {student?.full_name}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-green-200 text-sm font-medium uppercase tracking-wider">
+                      Gender
+                    </p>
+                    <p className="text-xl font-semibold mt-1">
+                      {student?.gender}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-green-200 text-sm font-medium uppercase tracking-wider">
+                      Student ID
+                    </p>
+                    <p className="text-xl font-mono font-bold mt-1 tracking-wider">
+                      {String(student?.id).toUpperCase()}
+                    </p>
+                  </div>
                 </div>
+
+                {/* Right: QR Code */}
+                <div className="flex flex-col items-center">
+                  <div className="bg-white p-5 rounded-2xl shadow-2xl">
+                    <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
+                  </div>
+                  <p className="mt-4 text-green-200 text-center font-medium">
+                    Scan to verify identity
+                  </p>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="mt-10 pt-6 border-t border-green-400 flex justify-between text-green-200 text-sm font-medium">
+                <span>Issued: {new Date().toLocaleDateString("en-GB")}</span>
+                <span className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5" />
+                  Verified Student
+                </span>
               </div>
             </div>
-
-            <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-400 opacity-10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-green-300 opacity-10 rounded-full blur-3xl" />
           </div>
         </div>
 
+        {/* Download Button */}
         <div className="text-center">
           <button
             onClick={downloadCard}
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-800 transition-all"
+            className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white font-bold py-5 px-10 rounded-xl text-xl shadow-xl transform hover:scale-105 transition-all duration-200"
           >
-            <Download className="w-6 h-6" />
-            Download Access Card
+            <Download className="w-7 h-7" />
+            Download Access Card (PNG)
           </button>
-          <p className="text-gray-600 text-sm mt-4">
-            Keep this card safe. You'll need it for accessing the institution.
+          <p className="text-gray-600 mt-5 text-sm">
+            This card is your official entry pass. Present it at the gate.
           </p>
         </div>
       </div>
     </div>
   );
 }
+
+// import { useEffect, useState, useRef } from 'react';
+// import { useParams, useNavigate } from 'react-router-dom';
+// import { Download, CheckCircle, ArrowLeft } from 'lucide-react';
+// import QRCode from 'qrcode';
+// import html2canvas from 'html2canvas';
+// import { supabase } from '../lib/supabase';
+// import { Student } from '../types/student';
+
+// export default function AccessCardPage() {
+//   const { studentId } = useParams<{ studentId: string }>();
+//   const navigate = useNavigate();
+//   const cardRef = useRef<HTMLDivElement>(null);
+//   const [student, setStudent] = useState<Student | null>(null);
+//   const [qrCodeUrl, setQrCodeUrl] = useState('');
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState('');
+
+//   useEffect(() => {
+//     if (studentId) {
+//       fetchStudentAndGenerateQR();
+//     }
+//   }, [studentId]);
+
+//   const fetchStudentAndGenerateQR = async () => {
+//     try {
+//       const { data, error } = await supabase
+//         .from('students')
+//         .select('*')
+//         .eq('id', studentId)
+//         .maybeSingle();
+
+//       if (error) throw error;
+//       if (!data) {
+//         setError('Student not found');
+//         return;
+//       }
+
+//       if (data.payment_status !== 'paid') {
+//         setError('Payment not completed');
+//         return;
+//       }
+
+//       setStudent(data);
+
+//       const qrUrl = await QRCode.toDataURL(data.qr_code_value, {
+//         width: 300,
+//         margin: 2,
+//         color: {
+//           dark: '#0B8A32',
+//           light: '#FFFFFF',
+//         },
+//       });
+//       setQrCodeUrl(qrUrl);
+//     } catch (err) {
+//       setError(err instanceof Error ? err.message : 'Error loading access card');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const downloadCard = async () => {
+//     if (!cardRef.current) return;
+
+//     try {
+//       const canvas = await html2canvas(cardRef.current, {
+//         scale: 2,
+//         backgroundColor: '#ffffff',
+//       });
+
+//       const link = document.createElement('a');
+//       link.download = `access-card-${student?.full_name.replace(/\s+/g, '-')}.png`;
+//       link.href = canvas.toDataURL('image/png');
+//       link.click();
+//     } catch (err) {
+//       console.error('Error downloading card:', err);
+//     }
+//   };
+
+//   if (loading) {
+//     return (
+//       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex items-center justify-center">
+//         <div className="text-center">
+//           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-600 mx-auto mb-4" />
+//           <p className="text-gray-600">Generating your access card...</p>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex items-center justify-center px-4">
+//         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+//           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+//             <span className="text-3xl">❌</span>
+//           </div>
+//           <h2 className="text-2xl font-bold text-gray-800 mb-2">Error</h2>
+//           <p className="text-gray-600 mb-6">{error}</p>
+//           <button
+//             onClick={() => navigate('/')}
+//             className="text-green-700 hover:text-green-800 font-semibold"
+//           >
+//             Return to Home
+//           </button>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 py-12 px-4">
+//       <div className="islamic-pattern absolute inset-0 opacity-5" />
+
+//       <div className="relative max-w-4xl mx-auto">
+//         <button
+//           onClick={() => navigate('/')}
+//           className="inline-flex items-center gap-2 text-green-700 hover:text-green-800 mb-6 transition-colors"
+//         >
+//           <ArrowLeft className="w-5 h-5" />
+//           Back to Home
+//         </button>
+
+//         <div className="text-center mb-8">
+//           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
+//             <CheckCircle className="w-10 h-10 text-green-600" />
+//           </div>
+//           <h1 className="text-4xl font-bold text-gray-800 mb-2">Registration Complete!</h1>
+//           <p className="text-lg text-gray-600">Your student access card is ready</p>
+//         </div>
+
+//         <div className="bg-white rounded-2xl shadow-2xl p-8 mb-8">
+//           <div ref={cardRef} className="relative bg-gradient-to-br from-green-600 via-green-700 to-green-800 rounded-2xl p-8 overflow-hidden">
+//             <div className="islamic-pattern-card absolute inset-0 opacity-10" />
+
+//             <div className="relative z-10">
+//               <div className="flex items-center justify-between mb-8">
+//                 <div>
+//                   <h2 className="text-3xl font-bold text-white mb-1">Madrasah Rawdatul Quraan</h2>
+//                   <p className="text-green-100">Student Access Card</p>
+//                 </div>
+//                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+//                   <span className="text-3xl">📖</span>
+//                 </div>
+//               </div>
+
+//               <div className="grid md:grid-cols-2 gap-8">
+//                 <div className="space-y-4">
+//                   {student?.photo_url && (
+//                     <div className="mb-4">
+//                       <img
+//                         src={student.photo_url}
+//                         alt={student.full_name}
+//                         className="w-32 h-32 rounded-xl object-cover border-4 border-white shadow-lg"
+//                       />
+//                     </div>
+//                   )}
+
+//                   <div>
+//                     <p className="text-green-200 text-sm mb-1">Full Name</p>
+//                     <p className="text-white text-xl font-bold">{student?.full_name}</p>
+//                   </div>
+
+//                   <div>
+//                     <p className="text-green-200 text-sm mb-1">Student ID</p>
+//                     <p className="text-white text-lg font-mono">{student?.id?.slice(0, 13).toUpperCase()}</p>
+//                   </div>
+
+//                   <div>
+//                     <p className="text-green-200 text-sm mb-1">Program</p>
+//                     <p className="text-white text-lg">{student?.course}</p>
+//                   </div>
+
+//                   <div>
+//                     <p className="text-green-200 text-sm mb-1">Date of Birth</p>
+//                     <p className="text-white text-lg">{new Date(student?.date_of_birth || '').toLocaleDateString()}</p>
+//                   </div>
+//                 </div>
+
+//                 <div className="flex flex-col items-center justify-center">
+//                   <div className="bg-white p-4 rounded-xl shadow-2xl">
+//                     {qrCodeUrl && (
+//                       <img src={qrCodeUrl} alt="QR Code" className="w-64 h-64" />
+//                     )}
+//                   </div>
+//                   <p className="text-green-100 text-sm mt-4 text-center">Scan for verification</p>
+//                 </div>
+//               </div>
+
+//               <div className="mt-8 pt-6 border-t border-green-500">
+//                 <div className="flex justify-between items-center text-green-100 text-sm">
+//                   <span>Valid from {new Date().toLocaleDateString()}</span>
+//                   <span className="flex items-center gap-2">
+//                     <CheckCircle className="w-4 h-4" />
+//                     Verified
+//                   </span>
+//                 </div>
+//               </div>
+//             </div>
+
+//             <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-400 opacity-10 rounded-full blur-3xl" />
+//             <div className="absolute bottom-0 left-0 w-64 h-64 bg-green-300 opacity-10 rounded-full blur-3xl" />
+//           </div>
+//         </div>
+
+//         <div className="text-center">
+//           <button
+//             onClick={downloadCard}
+//             className="inline-flex items-center gap-3 bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-800 transition-all"
+//           >
+//             <Download className="w-6 h-6" />
+//             Download Access Card
+//           </button>
+//           <p className="text-gray-600 text-sm mt-4">
+//             Keep this card safe. You'll need it for accessing the institution.
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
