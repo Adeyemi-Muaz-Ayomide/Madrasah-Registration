@@ -17,7 +17,7 @@ export default function PaymentPage() {
 
   const config = {
     reference: new Date().getTime().toString(),
-    email: student?.email || "no-reply@gardenquran.org",
+    email: student?.email || "ismareg22@gmail.com",
     amount: COURSE_FEE * 100, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
     publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
   };
