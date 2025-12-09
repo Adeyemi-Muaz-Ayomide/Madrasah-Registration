@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { CreditCard, CheckCircle, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Student } from "../types/student";
 import { PaystackButton } from "react-paystack";
@@ -18,28 +18,9 @@ export default function PaymentPage() {
   const config = {
     reference: new Date().getTime().toString(),
     email: student?.email || "ismareg22@gmail.com",
-    amount: COURSE_FEE * 100, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
+    amount: COURSE_FEE * 100,
     publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
   };
-
-  // // you can call this function anything
-  // const handlePaystackSuccessAction = () => {
-  //   // Implementation for whatever you want to do with reference and after success call.
-  //   alert("Worked");
-  // };
-
-  // // you can call this function anything
-  // const handlePaystackCloseAction = () => {
-  //   // implementation for  whatever you want to do when the Paystack dialog closed.
-  //   alert("closed");
-  // };
-
-  // const componentProps = {
-  //   ...config,
-  //   text: "Paystack Button Implementation",
-  //   onSuccess: () => handlePaystackSuccessAction(),
-  //   onClose: handlePaystackCloseAction,
-  // };
 
   useEffect(() => {
     if (studentId) {
@@ -111,32 +92,6 @@ export default function PaymentPage() {
     onSuccess: handlePaystackSuccessAction, // call our function
     onClose: handlePaystackCloseAction,
   };
-  // const handlePayment = async () => {
-  //   if (!student) return;
-  //   setProcessing(true);
-  //   setError("");
-
-  //   try {
-  //     await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  //     const { error: updateError } = await supabase
-  //       .from("Participation Registration Information")
-  //       .update({
-  //         payment_status: "paid",
-  //         stripe_session_id: `demo_${Date.now()}`,
-  //       })
-  //       .eq("id", studentId);
-
-  //     if (updateError) throw updateError;
-
-  //     navigate(`/access-card/${studentId}`);
-  //   } catch (err) {
-  //     setError(
-  //       err instanceof Error ? err.message : "Payment processing failed"
-  //     );
-  //     setProcessing(false);
-  //   }
-  // };
 
   if (loading) {
     return (
@@ -175,17 +130,17 @@ export default function PaymentPage() {
 
       <div className="relative max-w-2xl mx-auto">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/register")}
           className="inline-flex items-center gap-2 text-green-700 hover:text-green-800 mb-6 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          Back to Home
+          Back
         </button>
 
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-green-100">
-          <div className="bg-gradient-to-r from-green-600 to-green-700 px-8 py-10 text-center">
-            <CreditCard className="w-16 h-16 text-white mx-auto mb-4" />
-            <h1 className="text-4xl font-bold text-white mb-2">Payment</h1>
+          <div className="bg-[#064733] px-8 py-10 text-center">
+            {/* <CreditCard className="w-8 h- text-white mx-auto mb-4" /> */}
+            <h1 className="text-4xl font-bold text-[#FEED00] mb-2">Payment</h1>
             <p className="text-green-50">Complete your registration</p>
           </div>
 
@@ -213,14 +168,16 @@ export default function PaymentPage() {
                     {student?.gender}
                   </span>
                 </div>
-                <div className="border-t border-green-300 pt-3 mt-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-bold text-gray-800">
-                      Program Fee:
-                    </span>
-                    <span className="text-3xl font-bold text-green-700">
-                      ₦{COURSE_FEE}
-                    </span>
+                <div className="pt-5">
+                  <div className="border-t border-green-300 pt-3 mt-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-bold text-gray-800">
+                        Program Fee:
+                      </span>
+                      <span className="text-3xl font-bold text-green-700">
+                        ₦{COURSE_FEE}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -231,33 +188,14 @@ export default function PaymentPage() {
               </div>
             )}
 
-            <PaystackButton {...componentProps} />
-            {/* <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <p className="text-sm text-blue-800">
-                <strong>Demo Mode:</strong> This is a demonstration payment. In
-                production, this would integrate with Stripe for secure payment
-                processing.
-              </p>
-            </div> */}
-            {/* <button
-              onClick={handlePayment}
-              disabled={processing}
-              className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-            >
-              {processing ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-white" />
-                  Processing Payment...
-                </>
-              ) : (
-                <>
-                  <CheckCircle className="w-6 h-6" />
-                  Complete Payment - ₦{COURSE_FEE}
-                </>
-              )}
-            </button> */}
+            <div className=" w-full md:flex md:justify-center md:items-center">
+              <PaystackButton
+                {...componentProps}
+                className="w-full md:w-1/2 bg-[#064733] text-[#FEED00] py-4 rounded-[5px] font-semibold text-lg shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-800 duration-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
+              />
+            </div>
 
-            <p className="text-center text-sm text-gray-500 mt-4">
+            <p className="text-center text-sm text-gray-500 mt-16">
               Secure payment processing
               <br />
               Powered by Paystack
@@ -268,3 +206,49 @@ export default function PaymentPage() {
     </div>
   );
 }
+
+// const handlePayment = async () => {
+//   if (!student) return;
+//   setProcessing(true);
+//   setError("");
+
+//   try {
+//     await new Promise((resolve) => setTimeout(resolve, 1500));
+
+//     const { error: updateError } = await supabase
+//       .from("Participation Registration Information")
+//       .update({
+//         payment_status: "paid",
+//         stripe_session_id: `demo_${Date.now()}`,
+//       })
+//       .eq("id", studentId);
+
+//     if (updateError) throw updateError;
+
+//     navigate(`/access-card/${studentId}`);
+//   } catch (err) {
+//     setError(
+//       err instanceof Error ? err.message : "Payment processing failed"
+//     );
+//     setProcessing(false);
+//   }
+// };
+
+// // you can call this function anything
+// const handlePaystackSuccessAction = () => {
+//   // Implementation for whatever you want to do with reference and after success call.
+//   alert("Worked");
+// };
+
+// // you can call this function anything
+// const handlePaystackCloseAction = () => {
+//   // implementation for  whatever you want to do when the Paystack dialog closed.
+//   alert("closed");
+// };
+
+// const componentProps = {
+//   ...config,
+//   text: "Paystack Button Implementation",
+//   onSuccess: () => handlePaystackSuccessAction(),
+//   onClose: handlePaystackCloseAction,
+// };

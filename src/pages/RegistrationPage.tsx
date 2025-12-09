@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Upload, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { RegistrationFormData } from "../types/student";
 
@@ -65,19 +65,6 @@ export default function RegistrationPage() {
               formData.how_did_you_hear_about_the_event,
             why_are_you_attending_this_symposium:
               formData.why_are_you_attending_this_symposium,
-            // full_name: formData.full_name,
-            // email: formData.email,
-            // phone_number: formData.phone_number,
-            // gender: formData.gender,
-            // age: formData.age,
-            // level: formData.level,
-            // course_of_study: formData.course_of_study,
-            // university: formData.university,
-            // any_special_needs: formData.any_special_needs,
-            // how_did_you_hear_about_the_event:
-            //   formData.how_did_you_hear_about_the_event,
-            // why_are_you_attending_this_symposium:
-            //   formData.why_are_you_attending_this_symposium,
             qr_code_value: qrCodeValue,
             payment_status: "pending",
           },
@@ -89,11 +76,12 @@ export default function RegistrationPage() {
 
       navigate(`/payment/${student.id}`);
     } catch (err) {
-      setError(
+      const message =
         err instanceof Error
           ? err.message
-          : "Sorry😔, An error occurred during your registration, Please try again!"
-      );
+          : "Sorry😔, An error occurred during your registration. Please try again!";
+
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -105,15 +93,15 @@ export default function RegistrationPage() {
       <div className="relative max-w-3xl mx-auto">
         <button
           onClick={() => navigate("/")}
-          className="inline-flex items-center gap-2 text-green-700 hover:text-green-800 mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-[#064733] hover:text-green-800 mb-6 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           Back to Home
         </button>
 
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-green-100">
-          <div className="bg-gradient-to-r from-green-600 to-green-700 px-8 py-10 text-center">
-            <h1 className="text-4xl font-bold text-white mb-2">
+        <div className="bg-white rounded-[5px] shadow-2xl overflow-hidden border border-green-100">
+          <div className="bg-[#064733] px-8 py-10 text-center">
+            <h1 className="text-4xl font-bold text-[#FEED00] mb-2">
               Registration Form
             </h1>
             <p className="text-green-50">
@@ -122,11 +110,11 @@ export default function RegistrationPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
-            {error && (
+            {/* {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                 {error}
               </div>
-            )}
+            )} */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Full Name <span className="text-red-500">*</span>
@@ -167,6 +155,7 @@ export default function RegistrationPage() {
                   value={formData.phone_number}
                   onChange={handleInputChange}
                   required
+                  maxLength={15}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                   placeholder="+234 7XXX XXXXXX"
                 />
@@ -218,7 +207,7 @@ export default function RegistrationPage() {
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                  placeholder="Enter your current level (e.g., 100L, 200L, SS3)"
+                  placeholder="Enter your current level (e.g., 200L, SS3,...)"
                 />
               </div>
 
@@ -303,13 +292,15 @@ export default function RegistrationPage() {
             </div>
 
             {/* ----------------------------------------------- */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Processing..." : "Continue to Payment"}
-            </button>
+            <div className=" w-full md:flex md:justify-center md:items-center">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full md:w-1/2 bg-[#064733] text-[#FEED00] py-4 rounded-[5px] font-semibold text-lg shadow-lg hover:shadow-xl hover:from-green-700 hover:to-green-800 duration-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
+              >
+                {loading ? "Processing..." : "Continue to Payment"}
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -420,3 +411,17 @@ export default function RegistrationPage() {
                 placeholder="Enter your full address"
               /> */
 }
+
+// full_name: formData.full_name,
+// email: formData.email,
+// phone_number: formData.phone_number,
+// gender: formData.gender,
+// age: formData.age,
+// level: formData.level,
+// course_of_study: formData.course_of_study,
+// university: formData.university,
+// any_special_needs: formData.any_special_needs,
+// how_did_you_hear_about_the_event:
+//   formData.how_did_you_hear_about_the_event,
+// why_are_you_attending_this_symposium:
+//   formData.why_are_you_attending_this_symposium,
