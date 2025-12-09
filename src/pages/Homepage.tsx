@@ -57,7 +57,12 @@ export default function Homepage() {
             <div className="flex justify-start gap-6 md:gap-10 mb-6 flex-wrap">
               {Object.entries(timeLeft).map(([unit, value]) => (
                 <div key={unit} className="text-center">
-                  <div className="bg-[#064733] text-[#FEED00] w-16 h-16 md:w-[5rem] md:h-[5rem] rounded-2xl flex flex-col items-center justify-center shadow-2xl">
+                  <div
+                    className="bg-[#064733] text-white w-16 h-16 md:w-[5rem] md:h-[5rem] rounded-2xl flex flex-col items-center justify-center shadow-2xl"
+                    style={{
+                      backgroundImage: "url('/AccessCardTexture.png')",
+                    }}
+                  >
                     <span className="text-3xl md:text-4xl font-bold">
                       {value}
                     </span>
@@ -70,7 +75,7 @@ export default function Homepage() {
 
               {/* Main Title */}
               <h1 className="text-4xl md:text-5xl font-bold text-[#064733] leading-[3rem] md:leading-[3.5rem]">
-                A 3-DAY SYMPOSIUM FOR MALES AND FEMALES
+                A 3-Day Symposium For Males And Females
                 {/* <span className="text-gray-800">males and females</span> */}
               </h1>
               <p className="text-lg md:text-xl text-[#333333] max-w-3xl mx-auto leading-relaxed">

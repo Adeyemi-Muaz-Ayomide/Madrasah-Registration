@@ -41,17 +41,24 @@ export default function AccessCardPage() {
       setStudent(data);
 
       // Generate readable QR code content
-      const qrText = `Name: ${data.full_name}\nID: ID: ${String(
-        data.id
-      ).toUpperCase()}
-\nGender: ${data.gender}`;
+      //       const qrText = `Name: ${data.full_name}\nID: ${String(
+      //         data.id
+      //       ).toUpperCase()}
+      // \nGender: ${data.gender}`;
+
+      const qrText = [
+        `Name: ${data.full_name}`,
+        `ID: ${data.id}`,
+        `Gender: ${data.gender}`,
+        `payment_status: ${data.payment_status}`,
+      ].join("\n");
 
       const qrUrl = await QRCode.toDataURL(qrText, {
         width: 320,
-        margin: 3,
+        margin: 1,
         color: {
-          dark: "#0B8A32",
-          light: "#FFFFFF",
+          dark: "#FEED00",
+          light: "#064733",
         },
       });
 
@@ -136,95 +143,79 @@ export default function AccessCardPage() {
         </div>
 
         {/* The Actual Card */}
-        <div className="bg-white shadow-2xl p-10 mb-10">
+        <div className="shadow-2xl p-3 md:p-6 max-w-2xl mx-auto">
           <div
             ref={cardRef}
-            className="relative bg-gradient-to-br from-green-700 to-green-900 text-white p-10 overflow-hidden shadow-2xl"
+            className="relative bg-[#064733] text-white overflow-hidden shadow-2xl"
+            style={{
+              backgroundImage: "url('/AccessCardTexture.png')",
+            }}
           >
-            {/* Decorative Background */}
-            <div className="absolute inset-0 bg-black opacity-10"></div>
-            <div className="absolute top-0 right-0 w-80 h-80 bg-yellow-300 rounded-full blur-3xl opacity-20"></div>
-            <div className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-400 rounded-full blur-3xl opacity-20"></div>
-
-            <div className="relative z-10">
-              {/* Header */}
-              <div className="flex justify-between items-start mb-10">
+            {/* Top Section */}
+            <div className="px-5 md:px-10 pt-10 pb-8">
+              <div className="flex justify-between items-start mb-7">
+                {/* Registration ID */}
                 <div>
-                  <h2 className="text-xl font-bold">
-                    Madrasatu Rawdatil Quraan wal arabiyyah al-islamiyyah
-                  </h2>
-                  <p className="text-green-200 text-lg mt-1">
-                    Official Access Card
+                  <p className="text-white/70 text-sm font-medium tracking-wider uppercase">
+                    Registration ID
+                  </p>
+                  <p className="text-2xl md:text-3xl font-bold tracking-tight mt-2">
+                    {String(student?.id).padStart(3, "0")}
                   </p>
                 </div>
-                {/* <div className="bg-white text-green-800 w-16 h-16 rounded-full flex items-center justify-center text-4xl font-bold shadow-lg">
-                  Open Book
-                </div> */}
+
+                {/* Yellow QR Code Icon */}
+                <div className="text-[#FEED00]">
+                  <img src={qrCodeUrl} alt="QR Code" className="w-24 h-24" />
+                </div>
               </div>
 
-              {/* Main Content */}
-              <div className="grid md:grid-cols-2 gap-10 items-center">
-                {/* Left: Student Info */}
-                <div className="space-y-7 text-lg">
-                  <div>
-                    <p className="text-green-200 text-sm font-medium uppercase tracking-wider">
-                      Full Name
-                    </p>
-                    <p className="text-2xl font-bold mt-1 ">
-                      {student?.full_name}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-green-200 text-sm font-medium uppercase tracking-wider">
-                      Gender
-                    </p>
-                    <p className="text-xl font-semibold mt-1">
-                      {student?.gender}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-green-200 text-sm font-medium uppercase tracking-wider">
-                      Registration ID
-                    </p>
-                    <p className="text-xl font-mono font-bold mt-1 tracking-wider">
-                      {String(student?.id).toUpperCase()}
-                    </p>
-                  </div>
+              {/* Name & Gender */}
+              <div className="flex justify-between gap-8 ">
+                <div>
+                  <p className="text-white/60 text-xs uppercase tracking-widest font-medium">
+                    Full Name
+                  </p>
+                  <p className="text-xl font-bold mt-3 leading-tight">
+                    {student?.full_name}
+                  </p>
                 </div>
 
-                {/* Right: QR Code */}
-                <div className="flex flex-col items-center">
-                  <div className="bg-white p-5 rounded-2xl shadow-2xl">
-                    <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
-                  </div>
-                  <p className="mt-4 text-green-200 text-center font-medium">
-                    Scan to verify identity
+                <div>
+                  <p className="text-white/60 text-xs uppercase tracking-widest font-medium">
+                    Gender
+                  </p>
+                  <p className="text-xl font-bold mt-3 uppercase">
+                    {student?.gender}
                   </p>
                 </div>
               </div>
+            </div>
 
-              {/* Footer */}
-              <div className="mt-10 pt-6 border-t border-green-400 flex justify-between text-green-200 text-sm font-medium">
-                <span>Issued: {new Date().toLocaleDateString("en-GB")}</span>
-                <span className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5" />
-                  Verified Participant
-                </span>
-              </div>
+            {/* Bottom Banner */}
+            <div
+              className="bg-[#FFFFFF00] py-8 px-5 text-center bg-"
+              // style={{
+              //   backgroundImage: "url('/White.png')",
+              // }}
+              style={{
+                backgroundImage:
+                  'url(\'data:image/svg+xml,%3Csvg width="100%25" height="100%25" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noise)" opacity="0.15"/%3E%3C/svg%3E\')',
+              }}
+            >
+              <h2 className="text-[24px] font-black tracking-wider uppercase">
+                GQA SYMPOSIUM ACCESS CARD
+              </h2>
             </div>
           </div>
         </div>
 
         {/* Download Button */}
-        <div className="text-center">
+        <div className="text-center mt-10">
           <button
             onClick={downloadCard}
             className="inline-flex items-center gap-3 bg-[#064733] hover:to-green-800 text-[#FEED00] font-bold py-5 px-10 rounded-xl text-xl shadow-xl transform hover:scale-105 transition-all duration-200"
           >
-            {/* w-full md:w-1/2 bg-[#064733] text-[#FEED00] py-4 rounded-[5px]
-            font-semibold text-lg shadow-lg hover:shadow-xl hover:from-green-700
-            hover:to-green-800 duration-300 transition-all disabled:opacity-50
-            disabled:cursor-not-allowed hover:scale-105 */}
             <Download className="w-7 h-7" />
             Download Access Card (PNG)
           </button>
@@ -457,3 +448,18 @@ export default function AccessCardPage() {
 //     </div>
 //   );
 // }
+
+{
+  /* <span>Issued: {new Date().toLocaleDateString("en-GB")}</span>
+                <span className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5" />
+                  Verified Participant
+                </span> */
+}
+
+{
+  /* w-full md:w-1/2 bg-[#064733] text-[#FEED00] py-4 rounded-[5px]
+            font-semibold text-lg shadow-lg hover:shadow-xl hover:from-green-700
+            hover:to-green-800 duration-300 transition-all disabled:opacity-50
+            disabled:cursor-not-allowed hover:scale-105 */
+}

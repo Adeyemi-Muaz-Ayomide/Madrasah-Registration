@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Homepage from './pages/Homepage';
-import RegistrationPage from './pages/RegistrationPage';
-import PaymentPage from './pages/PaymentPage';
-import AccessCardPage from './pages/AccessCardPage';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Homepage from "./pages/Homepage";
+import RegistrationPage from "./pages/RegistrationPage";
+import PaymentPage from "./pages/PaymentPage";
+import AccessCardPage from "./pages/AccessCardPage";
 
 function App() {
   return (
