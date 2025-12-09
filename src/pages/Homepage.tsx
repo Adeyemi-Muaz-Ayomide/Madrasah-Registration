@@ -93,7 +93,7 @@ export default function Homepage() {
           </div>
 
           <div className="mt-10 md:mt-0 md:pt-20">
-            <img src="/Side Image.png" alt="Side Image" />
+            <img src="/SideImage.png" alt="Side Image" />
           </div>
         </section>
 
