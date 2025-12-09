@@ -57,7 +57,7 @@ export default function Homepage() {
             <div className="flex justify-start gap-6 md:gap-10 mb-6 flex-wrap">
               {Object.entries(timeLeft).map(([unit, value]) => (
                 <div key={unit} className="text-center">
-                  <div className="bg-[#064733] text-[#FEED00] w-16 h-16 md:w-[5rem] md:h-[5rem] rounded-2xl flex flex-col items-center justify-center shadow-2xl noise-text">
+                  <div className="bg-[#064733] text-[#FEED00] w-16 h-16 md:w-[5rem] md:h-[5rem] rounded-2xl flex flex-col items-center justify-center shadow-2xl">
                     <span className="text-3xl md:text-4xl font-bold">
                       {value}
                     </span>
