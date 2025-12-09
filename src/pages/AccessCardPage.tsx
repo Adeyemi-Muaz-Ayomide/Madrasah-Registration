@@ -136,10 +136,10 @@ export default function AccessCardPage() {
         </div>
 
         {/* The Actual Card */}
-        <div className="bg-white rounded-3xl shadow-2xl p-10 mb-10">
+        <div className="bg-white shadow-2xl p-10 mb-10">
           <div
             ref={cardRef}
-            className="relative bg-gradient-to-br from-green-700 to-green-900 text-white rounded-2xl p-10 overflow-hidden shadow-2xl"
+            className="relative bg-gradient-to-br from-green-700 to-green-900 text-white p-10 overflow-hidden shadow-2xl"
           >
             {/* Decorative Background */}
             <div className="absolute inset-0 bg-black opacity-10"></div>
@@ -150,16 +150,16 @@ export default function AccessCardPage() {
               {/* Header */}
               <div className="flex justify-between items-start mb-10">
                 <div>
-                  <h2 className="text-3xl font-bold">
-                    Madrasah Rawdatul Quraan
+                  <h2 className="text-xl font-bold">
+                    Madrasatu Rawdatil Quraan wal arabiyyah al-islamiyyah
                   </h2>
                   <p className="text-green-200 text-lg mt-1">
-                    Official Student Access Card
+                    Official Access Card
                   </p>
                 </div>
-                <div className="bg-white text-green-800 w-16 h-16 rounded-full flex items-center justify-center text-4xl font-bold shadow-lg">
+                {/* <div className="bg-white text-green-800 w-16 h-16 rounded-full flex items-center justify-center text-4xl font-bold shadow-lg">
                   Open Book
-                </div>
+                </div> */}
               </div>
 
               {/* Main Content */}
@@ -170,7 +170,7 @@ export default function AccessCardPage() {
                     <p className="text-green-200 text-sm font-medium uppercase tracking-wider">
                       Full Name
                     </p>
-                    <p className="text-2xl font-bold mt-1">
+                    <p className="text-2xl font-bold mt-1 ">
                       {student?.full_name}
                     </p>
                   </div>
@@ -184,7 +184,7 @@ export default function AccessCardPage() {
                   </div>
                   <div>
                     <p className="text-green-200 text-sm font-medium uppercase tracking-wider">
-                      Student ID
+                      Registration ID
                     </p>
                     <p className="text-xl font-mono font-bold mt-1 tracking-wider">
                       {String(student?.id).toUpperCase()}
@@ -208,7 +208,7 @@ export default function AccessCardPage() {
                 <span>Issued: {new Date().toLocaleDateString("en-GB")}</span>
                 <span className="flex items-center gap-2">
                   <CheckCircle className="w-5 h-5" />
-                  Verified Student
+                  Verified Participant
                 </span>
               </div>
             </div>
@@ -219,13 +219,17 @@ export default function AccessCardPage() {
         <div className="text-center">
           <button
             onClick={downloadCard}
-            className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white font-bold py-5 px-10 rounded-xl text-xl shadow-xl transform hover:scale-105 transition-all duration-200"
+            className="inline-flex items-center gap-3 bg-[#064733] hover:to-green-800 text-[#FEED00] font-bold py-5 px-10 rounded-xl text-xl shadow-xl transform hover:scale-105 transition-all duration-200"
           >
+            {/* w-full md:w-1/2 bg-[#064733] text-[#FEED00] py-4 rounded-[5px]
+            font-semibold text-lg shadow-lg hover:shadow-xl hover:from-green-700
+            hover:to-green-800 duration-300 transition-all disabled:opacity-50
+            disabled:cursor-not-allowed hover:scale-105 */}
             <Download className="w-7 h-7" />
             Download Access Card (PNG)
           </button>
           <p className="text-gray-600 mt-5 text-sm">
-            This card is your official entry pass. Present it at the gate.
+            This card is your official entry pass.
           </p>
         </div>
       </div>

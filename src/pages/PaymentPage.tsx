@@ -137,7 +137,7 @@ export default function PaymentPage() {
           Back
         </button>
 
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-green-100">
+        <div className="bg-white rounded-[5px] shadow-2xl overflow-hidden border border-green-100">
           <div className="bg-[#064733] px-8 py-10 text-center">
             {/* <CreditCard className="w-8 h- text-white mx-auto mb-4" /> */}
             <h1 className="text-4xl font-bold text-[#FEED00] mb-2">Payment</h1>
@@ -152,19 +152,19 @@ export default function PaymentPage() {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Name:</span>
-                  <span className="font-semibold text-gray-800">
+                  <span className="font-semibold text-[#064733]">
                     {student?.full_name}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Email:</span>
-                  <span className="font-semibold text-gray-800">
+                  <span className="font-semibold text-[#064733]">
                     {student?.email}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Gender:</span>
-                  <span className="font-semibold text-gray-800">
+                  <span className="font-semibold text-[#064733]">
                     {student?.gender}
                   </span>
                 </div>
