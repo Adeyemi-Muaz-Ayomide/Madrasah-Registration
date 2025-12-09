@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
 
 export default function Homepage() {
   const navigate = useNavigate();
@@ -35,15 +34,13 @@ export default function Homepage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50">
-      <Toaster position="top-right" />
-
       <div className="islamic-pattern absolute inset-0 opacity-5" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* div 1 */}
         <section className="flex items-center justify-between">
           <div>
-            <img src="/public/Logo.svg" alt="Madrasah Logo" />
+            <img src="/Logo.svg" alt="Madrasah Logo" />
           </div>
           <button
             onClick={() => navigate("/register")}
@@ -60,12 +57,12 @@ export default function Homepage() {
             <div className="flex justify-start gap-6 md:gap-10 mb-6 flex-wrap">
               {Object.entries(timeLeft).map(([unit, value]) => (
                 <div key={unit} className="text-center">
-                  <div className="bg-[#0C4F3B] text-white w-16 h-16 md:w-[5rem] md:h-[5rem] rounded-2xl flex flex-col items-center justify-center shadow-2xl">
+                  <div className="bg-[#064733] text-[#FEED00] w-16 h-16 md:w-[5rem] md:h-[5rem] rounded-2xl flex flex-col items-center justify-center shadow-2xl noise-text">
                     <span className="text-3xl md:text-4xl font-bold">
                       {value}
                     </span>
                   </div>
-                  <p className="text-gray-600 mt-3 text-sm md:text-base capitalize font-medium">
+                  <p className="text-[#444444] mt-3 text-sm md:text-base capitalize font-medium">
                     {unit}
                   </p>
                 </div>
@@ -73,7 +70,7 @@ export default function Homepage() {
 
               {/* Main Title */}
               <h1 className="text-4xl md:text-5xl font-bold text-[#064733] leading-[3rem] md:leading-[3.5rem]">
-                A 3-DAY SYMPOSIUM FOR BOTH MALES AND FEMALES
+                A 3-DAY SYMPOSIUM FOR MALES AND FEMALES
                 {/* <span className="text-gray-800">males and females</span> */}
               </h1>
               <p className="text-lg md:text-xl text-[#333333] max-w-3xl mx-auto leading-relaxed">
@@ -91,7 +88,7 @@ export default function Homepage() {
           </div>
 
           <div className="mt-10 md:mt-0 md:pt-20">
-            <img src="/public/Side Image.png" alt="Side Image" />
+            <img src="/Side Image.png" alt="Side Image" />
           </div>
         </section>
 
