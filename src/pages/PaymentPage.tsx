@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { Student } from "../types/student";
 import { PaystackButton } from "react-paystack";
+import Texture from "../assets/AccessCardTexture.png";
 
 export default function PaymentPage() {
   const { studentId } = useParams<{ studentId: string }>();
@@ -138,7 +139,12 @@ export default function PaymentPage() {
         </button>
 
         <div className="bg-white rounded-[5px] shadow-2xl overflow-hidden border border-green-100">
-          <div className="bg-[#064733] px-8 py-10 text-center">
+          <div
+            className="bg-[#064733] px-8 py-10 text-center"
+            style={{
+              backgroundImage: `url(${Texture})`,
+            }}
+          >
             {/* <CreditCard className="w-8 h- text-white mx-auto mb-4" /> */}
             <h1 className="text-4xl font-bold text-[#FEED00] mb-2">Payment</h1>
             <p className="text-green-50">Complete your registration</p>

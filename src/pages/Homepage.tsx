@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
+import Logo from "../assets/Logo.svg";
+import SideImage from "../assets/SideImage.png";
+import Texture from "../assets/AccessCardTexture.png";
 
 export default function Homepage() {
   const navigate = useNavigate();
@@ -40,7 +43,7 @@ export default function Homepage() {
         {/* div 1 */}
         <section className="flex items-center justify-between">
           <div>
-            <img src="/Logo.svg" alt="Madrasah Logo" />
+            <img src={Logo} alt="Madrasah Logo" />
           </div>
           <button
             onClick={() => navigate("/register")}
@@ -60,7 +63,7 @@ export default function Homepage() {
                   <div
                     className="bg-[#064733] text-white w-16 h-16 md:w-[5rem] md:h-[5rem] rounded-2xl flex flex-col items-center justify-center shadow-2xl"
                     style={{
-                      backgroundImage: "url('/AccessCardTexture.png')",
+                      backgroundImage: `url(${Texture})`,
                     }}
                   >
                     <span className="text-3xl md:text-4xl font-bold">
@@ -93,7 +96,7 @@ export default function Homepage() {
           </div>
 
           <div className="mt-10 md:mt-0 md:pt-20">
-            <img src="/SideImage.png" alt="Side Image" />
+            <img src={SideImage} alt="Side Image" />
           </div>
         </section>
 
@@ -141,8 +144,7 @@ export default function Homepage() {
 
         <footer className="text-center text-gray-600 border-t border-green-100 mt-10 pt-10">
           <p className="text-sm">
-            © {new Date().getFullYear()} Madrasatu Rawdatil Qur'an wal arabiyyah
-            al-islamiyyah. All rights reserved.
+            © {new Date().getFullYear()} GQA Symposium. All rights reserved.
           </p>
         </footer>
       </div>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { RegistrationFormData } from "../types/student";
+import Texture from "../assets/AccessCardTexture.png";
 
 export default function RegistrationPage() {
   const navigate = useNavigate();
@@ -106,7 +107,12 @@ export default function RegistrationPage() {
         </button>
 
         <div className="bg-white rounded-[5px] shadow-2xl overflow-hidden border border-green-100">
-          <div className="bg-[#064733] px-8 py-10 text-center">
+          <div
+            className="bg-[#064733] px-8 py-10 text-center"
+            style={{
+              backgroundImage: `url(${Texture})`,
+            }}
+          >
             <h1 className="text-4xl font-bold text-[#FEED00] mb-2">
               Registration Form
             </h1>

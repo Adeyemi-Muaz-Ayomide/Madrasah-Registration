@@ -4,6 +4,7 @@ import { Download, CheckCircle, ArrowLeft } from "lucide-react";
 import QRCode from "qrcode";
 import html2canvas from "html2canvas";
 import { supabase } from "../lib/supabase";
+import Texture from "../assets/AccessCardTexture.png";
 
 export default function AccessCardPage() {
   const { studentId } = useParams<{ studentId: string }>();
@@ -148,7 +149,7 @@ export default function AccessCardPage() {
             ref={cardRef}
             className="relative bg-[#064733] text-white overflow-hidden shadow-2xl"
             style={{
-              backgroundImage: "url('/AccessCardTexture.png')",
+              backgroundImage: `url(${Texture})`,
             }}
           >
             {/* Top Section */}
