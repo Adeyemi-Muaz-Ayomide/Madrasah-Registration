@@ -14,7 +14,7 @@ export default function PaymentPage() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
 
-  const COURSE_FEE = 100;
+  const COURSE_FEE = 2000;
 
   const config = {
     reference: new Date().getTime().toString(),
