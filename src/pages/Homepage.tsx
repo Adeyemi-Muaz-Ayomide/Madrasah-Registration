@@ -39,7 +39,7 @@ export default function Homepage() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50">
       <div className="islamic-pattern absolute inset-0 opacity-5" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="relative max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-6">
         {/* div 1 */}
         <section className="flex items-center justify-between">
           <div>
@@ -56,8 +56,8 @@ export default function Homepage() {
         {/* div 2 */}
         <section className="md:flex md:justify-between md:items-center">
           {/* Countdown */}
-          <div className="md:w-[50%] pt-20 md:pt-20">
-            <div className="flex justify-start gap-6 md:gap-10 mb-6 flex-wrap">
+          <div className="md:w-[50%] pt-12 md:pt-8">
+            <div className="flex justify-start gap-6 md:gap-6 mb-6 flex-wrap">
               {Object.entries(timeLeft).map(([unit, value]) => (
                 <div key={unit} className="text-center">
                   <div
