@@ -15,6 +15,8 @@ export interface Student {
   stripe_session_id?: string;
   qr_code_value?: string;
   created_at?: string;
+  quantity?: string;
+  total_amount_paid?: string;
 }
 
 export interface RegistrationFormData {

@@ -25,7 +25,7 @@ export default function AccessCardPage() {
     try {
       const { data, error } = await supabase
         .from("Participation Registration Information")
-        .select("full_name, gender, id, payment_status")
+        .select("full_name, gender, id, payment_status, quantity")
         .eq("id", Number(studentId))
         .maybeSingle();
 
@@ -52,6 +52,7 @@ export default function AccessCardPage() {
         `ID: ${data.id}`,
         `Gender: ${data.gender}`,
         `payment_status: ${data.payment_status}`,
+        `quantity: ${data.quantity}`,
       ].join("\n");
 
       const qrUrl = await QRCode.toDataURL(qrText, {
@@ -184,10 +185,10 @@ export default function AccessCardPage() {
 
                 <div>
                   <p className="text-white/60 text-xs uppercase tracking-widest font-medium">
-                    Gender
+                    Quantity
                   </p>
                   <p className="text-xl font-bold mt-3 uppercase">
-                    {student?.gender}
+                    {student?.quantity}
                   </p>
                 </div>
               </div>

@@ -13,13 +13,15 @@ export default function PaymentPage() {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
   const COURSE_FEE = 2000;
 
   const config = {
     reference: new Date().getTime().toString(),
     email: student?.email || "ismareg22@gmail.com",
-    amount: COURSE_FEE * 100,
+    // amount: COURSE_FEE * 100,
+    amount: COURSE_FEE * quantity * 100,
     publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
   };
 
@@ -66,6 +68,8 @@ export default function PaymentPage() {
         .update({
           payment_status: "paid",
           payment_reference: reference.reference,
+          quantity: quantity,
+          total_amount_paid: COURSE_FEE * quantity,
         })
         .eq("id", Number(studentId));
 
@@ -89,8 +93,9 @@ export default function PaymentPage() {
 
   const componentProps = {
     ...config,
-    text: `Complete Payment - ₦${COURSE_FEE}`,
-    onSuccess: handlePaystackSuccessAction, // call our function
+    // text: `Complete Payment - ₦${COURSE_FEE}`,
+    text: `Pay ₦${COURSE_FEE * quantity}`,
+    onSuccess: handlePaystackSuccessAction,
     onClose: handlePaystackCloseAction,
   };
 
@@ -186,6 +191,43 @@ export default function PaymentPage() {
                     </div>
                   </div>
                 </div>
+                {/* ---------------------------------------- */}
+                {/* Quantity Selector */}
+                <div className="flex justify-between items-center pt-6">
+                  <span className="text-gray-600 font-semibold">
+                    Number of Participants:
+                  </span>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                      className="px-3 py-1 bg-green-200 text-green-800 rounded"
+                    >
+                      -
+                    </button>
+
+                    <span className="text-xl font-bold">{quantity}</span>
+
+                    <button
+                      // onClick={() => setQuantity((q) => q + 1)}
+                      onClick={() => setQuantity((q) => Math.min(10, q + 1))}
+                      className="px-3 py-1 bg-green-200 text-green-800 rounded"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {/* Total price */}
+                <div className="flex justify-between items-center pt-6">
+                  <span className="text-lg font-bold text-gray-800">
+                    Total:
+                  </span>
+                  <span className="text-3xl font-bold text-green-700">
+                    ₦{COURSE_FEE * quantity}
+                  </span>
+                </div>
+                {/* --------------------------------------- */}
               </div>
             </div>
             {error && (
@@ -201,7 +243,7 @@ export default function PaymentPage() {
               />
             </div>
 
-            <p className="text-center text-sm text-gray-500 mt-16">
+            <p className="text-center text-base text-gray-500 mt-16">
               Secure payment processing
               <br />
               Powered by Paystack
