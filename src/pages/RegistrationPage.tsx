@@ -201,9 +201,14 @@ export default function RegistrationPage() {
                   value={formData.age}
                   onChange={handleInputChange}
                   required
+                  min={15}
+                  max={30}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                   placeholder="Enter your age"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Age must be between 15 and 30 years old.
+                </p>
               </div>
             </div>
             {/* -------------------------------- */}
@@ -212,7 +217,7 @@ export default function RegistrationPage() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Class/Level <span className="text-red-500">*</span>
                 </label>
-                <input
+                {/* <input
                   type="text"
                   name="level"
                   value={formData.level}
@@ -220,7 +225,28 @@ export default function RegistrationPage() {
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                   placeholder="Enter your current level (e.g., 200L, SS3,...)"
-                />
+                /> */}
+                <select
+                  name="level"
+                  value={formData.level}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                >
+                  <option value="">Select your level</option>
+                  <option value="SS3">SS3</option>
+                  <option value="100L">100L</option>
+                  <option value="200L">200L</option>
+                  <option value="300L">300L</option>
+                  <option value="400L">400L</option>
+                  <option value="500L">500L</option>
+                  <option value="600L">600L</option>
+                  <option value="Graduate">Graduate</option>
+                </select>
+
+                <p className="text-xs text-gray-500 mt-1">
+                  Only SS3 and above are eligible.
+                </p>
               </div>
 
               <div>
