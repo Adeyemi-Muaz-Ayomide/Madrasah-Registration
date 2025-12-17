@@ -50,6 +50,24 @@ export default function RegistrationPage() {
     setError("");
 
     try {
+      // 1️ Checks if email already exists
+      const { data: existingUser, error: checkError } = await supabase
+        .from("Participation Registration Information")
+        .select("id, payment_status")
+        .eq("email", formData.email)
+        .maybeSingle();
+
+      if (checkError) throw checkError;
+
+      if (existingUser) {
+        // Optional: if already paid, redirect or block
+        setError(
+          "This email has already been registered. Please use another email!."
+        );
+        setLoading(false);
+        return;
+      }
+
       const qrCodeValue = `STUDENT-${Date.now()}-${Math.random()
         .toString(36)
         .substr(2, 9)}`;
@@ -82,13 +100,24 @@ export default function RegistrationPage() {
       if (insertError) throw insertError;
 
       navigate(`/payment/${student.id}`);
-    } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Sorry😔, An error occurred during your registration. Please try again!";
+    } catch (err: any) {
+      // 🧠 HANDLE ALL SUPABASE ERRORS
+      if (err?.code === "23505") {
+        setError("This email has already been registered.");
+      } else if (err?.message) {
+        setError(err.message);
+      } else {
+        setError(
+          "Sorry😔, An error occurred during your registration. Please try again!"
+        );
+      }
 
-      setError(message);
+      // const message =
+      //   err instanceof Error
+      //     ? err.message
+      //     : "Sorry😔, An error occurred during your registration. Please try again!";
+
+      // setError(message);
     } finally {
       setLoading(false);
     }
@@ -340,6 +369,11 @@ export default function RegistrationPage() {
               </button>
             </div>
           </form>
+          {error && (
+            <div className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-center">
+              {error}
+            </div>
+          )}
         </div>
       </div>
     </div>
