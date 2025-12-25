@@ -11,29 +11,29 @@ export default function Homepage() {
   // Countdown to Dec 25th 2025, 10:00 AM
   const eventDate = new Date("2025-12-25T10:00:00");
 
-  const calculateTimeLeft = () => {
-    const difference = +eventDate - +new Date();
-    let timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  // const calculateTimeLeft = () => {
+  //   const difference = +eventDate - +new Date();
+  //   let timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
-    if (difference > 0) {
-      timeLeft = {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      };
-    }
-    return timeLeft;
-  };
+  //   if (difference > 0) {
+  //     timeLeft = {
+  //       days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+  //       hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+  //       minutes: Math.floor((difference / 1000 / 60) % 60),
+  //       seconds: Math.floor((difference / 1000) % 60),
+  //     };
+  //   }
+  //   return timeLeft;
+  // };
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  // const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setTimeLeft(calculateTimeLeft());
+  //   }, 1000);
+  //   return () => clearInterval(timer);
+  // }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50">
@@ -58,7 +58,10 @@ export default function Homepage() {
           {/* Countdown */}
           <div className="md:w-[50%] pt-12 md:pt-8">
             <div className="flex justify-start gap-6 md:gap-6 mb-6 flex-wrap">
-              {Object.entries(timeLeft).map(([unit, value]) => (
+              <h2 className="text-lg md:text-2xl font-bold border border-[#064733] px-3 py-2 md:px-8 rounded-full text-[#064733] leading-[3rem] md:leading-[3.5rem]">
+                It's D-Day☪️! See You At The Venue🕌
+              </h2>
+              {/* {Object.entries(timeLeft).map(([unit, value]) => (
                 <div key={unit} className="text-center">
                   <div
                     className="bg-[#064733] text-white w-16 h-16 md:w-[5rem] md:h-[5rem] rounded-2xl flex flex-col items-center justify-center shadow-2xl"
@@ -74,7 +77,7 @@ export default function Homepage() {
                     {unit}
                   </p>
                 </div>
-              ))}
+              ))} */}
 
               {/* Main Title */}
               <h1 className="text-4xl md:text-5xl font-bold text-[#064733] leading-[3rem] md:leading-[3.5rem]">
