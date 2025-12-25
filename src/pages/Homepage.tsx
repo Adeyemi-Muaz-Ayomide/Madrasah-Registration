@@ -58,8 +58,8 @@ export default function Homepage() {
           {/* Countdown */}
           <div className="md:w-[50%] pt-12 md:pt-8">
             <div className="flex justify-start gap-6 md:gap-6 mb-6 flex-wrap">
-              <h2 className="text-lg md:text-2xl font-bold border border-[#064733] px-3 py-2 md:px-8 rounded-full text-[#064733] leading-[3rem] md:leading-[3.5rem]">
-                It's D-Day☪️! See You At The Venue🕌
+              <h2 className="text-[16px] md:text-xl lg:text-2xl font-bold border border-[#064733] px-3 py-2 lg:py-4 lg:px-8 rounded-full text-[#064733] leading-[3rem] md:leading-[3.5rem]">
+                It's D-Day! See You At The Venue🕌
               </h2>
               {/* {Object.entries(timeLeft).map(([unit, value]) => (
                 <div key={unit} className="text-center">
